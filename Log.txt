@@ -1,0 +1,23 @@
+Cosas importantes para no olvidar
+
+
+14/02:
+
+- Solucione el bug de infeasibility. La funcion objetivo tenia seteada todas las variables con lowerbound y upperbound igual a 1. Cambie a 0 y 1 respectivamente.
+
+- status = CPXsolution(env, lp, &solstat, &objval, x, pi, slack, dj); no anda para problemas de MIP, entonces hay que ir buscando informacion de la solucion con diferentes rutinas.
+
+Con esto se puede saber el valor final de la funcion objetivo.
+status = CPXgetobjval (env, lp, &objval);
+if ( status ) {
+	fprintf (stderr,"No MIP objective value available.  Exiting...\n");
+	goto TERMINATE;
+}
+printf ("Valor de la solucion  = %f\n\n", objval);
+
+
+- Arregle para que se pudiese elegir angulo del tipo iji que antes no se podian. Con esto, en la instancia de 4 puntos dejo de preferir los subtours y ahora prefiere armar el cuadrado.
+
+
+
+
