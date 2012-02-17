@@ -19,6 +19,8 @@ Federico Javier Pousa
 
 
 
+//~ static int CPXPUBLIC mycutcallback(CPXCENVptr env,void *cbdata,int wherefrom,void *cbhandle,int *useraction_p);
+static int CPXPUBLIC mycutcallback(CPXCENVptr env,void *cbdata,int wherefrom,void *cbhandle,int *useraction_p);
 
 static void free_and_null (char** ptr);
 
@@ -181,6 +183,35 @@ int main(int argc, char **argv){
 		goto TERMINATE;
 	}
 	
+	
+	
+	
+	
+	/* Turn on traditional search for use with control callbacks */
+
+   status = CPXsetintparam (env, CPX_PARAM_MIPSEARCH, CPX_MIPSEARCH_TRADITIONAL);
+   if ( status )  goto TERMINATE;
+
+   /* Let MIP callbacks work on the original model */
+
+   //~ status = CPXsetintparam (env, CPX_PARAM_MIPCBREDLP, CPX_OFF);
+   //~ if ( status )  goto TERMINATE;
+
+   /* Create user cuts for noswot problem */
+
+   //~ status = makeusercuts (env, lp, &usercutinfo);
+   //~ if ( status )  goto TERMINATE;
+
+   /* Set up to use MIP usercut callback */
+	
+	
+	
+
+	
+	
+	
+	
+	
 /////////////////////////////////////////////////////////////////////////
 //Aca se llena el problema
 	#define NUMCOLS cantPuntos*cantPuntos+cantPuntos*cantPuntos*cantPuntos
@@ -309,8 +340,21 @@ ENDFILL:
 	
 /////////////////////////////////////////////////////////////////////////	
 	//Optimizacion del problema
+	
+	
+	//Aca quiero setear para hacer callbacks
+	
+	status = CPXsetusercutcallbackfunc(env, mycutcallback, NULL);
+	if(status){
+		cerr << "pincho callback" << endl;
+		goto TERMINATE;
+	}  
+	
+	
+	
 	status = CPXmipopt(env,lp);
 	if(status){
+		cout << "El status es: " << status << endl;
 		fprintf(stderr,"Fallo la optimizacion\n");
 		goto TERMINATE;
 	}
@@ -434,3 +478,16 @@ static void free_and_null(char **ptr){
 	}
 }
 ///////////////////////////////////////
+static int CPXPUBLIC 
+mycutcallback (CPXCENVptr env,
+               void       *cbdata,
+               int        wherefrom,
+               void       *cbhandle,
+               int        *useraction_p)
+{
+   cout << "Aca estoy haciendo callbacks!" << endl;
+   *useraction_p = CPX_CALLBACK_DEFAULT;
+   
+} /* END mycutcallback */
+
+

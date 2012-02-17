@@ -3,9 +3,12 @@ Cosas importantes para no olvidar
 
 14/02:
 
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 - Solucione el bug de infeasibility. La funcion objetivo tenia seteada todas las variables con lowerbound y upperbound igual a 1. Cambie a 0 y 1 respectivamente.
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 - status = CPXsolution(env, lp, &solstat, &objval, x, pi, slack, dj); no anda para problemas de MIP, entonces hay que ir buscando informacion de la solucion con diferentes rutinas.
+
 
 Con esto se puede saber el valor final de la funcion objetivo.
 status = CPXgetobjval (env, lp, &objval);
@@ -15,9 +18,40 @@ if ( status ) {
 }
 printf ("Valor de la solucion  = %f\n\n", objval);
 
-
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 - Arregle para que se pudiese elegir angulo del tipo iji que antes no se podian. Con esto, en la instancia de 4 puntos dejo de preferir los subtours y ahora prefiere armar el cuadrado.
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+17/02
 
+- Agregue callbacks para despues poder ir definiendo cortes propios, buscando en el manual de cplex esto se hace poniendo el siguiente codigo
+
+status = CPXsetusercutcallbackfunc(env, mycutcallback, NULL);
+	if(status){
+		cerr << "pincho callback" << endl;
+		goto TERMINATE;
+	}  
+
+donde mycutcallback es una funcion con aridad:
+
+static int CPXPUBLIC mycutcallback(CPXCENVptr env,void *cbdata,int wherefrom,void *cbhandle,int *useraction_p);
+static int CPXPUBLIC 
+mycutcallback (CPXCENVptr env,
+               void       *cbdata,
+               int        wherefrom,
+               void       *cbhandle,
+               int        *useraction_p)
+{
+   cout << "Aca estoy haciendo callbacks!" << endl;
+   
+   
+} /* END mycutcallback */
+
+y el NULL del tercer parametro corresponde a informacion que puedo pasar y no estoy pasando ahora.
+
+Agregando esto entra a mi funcion del callback pero dice:
+Fallo la optimizacion!
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
