@@ -140,6 +140,24 @@ int main(int argc, char **argv){
 		}
 	}
 	fclose(fin);
+	
+	
+	
+	//~ for(int i=0;i<cantPuntos;i++){
+		//~ for(int j=0;j<cantPuntos;j++){
+			//~ cerr << indx[i][j] << " ";
+		//~ }
+		//~ cerr << endl;
+	//~ }
+	
+	for(int i=0;i<cantPuntos;i++){
+		for(int j=0;j<cantPuntos;j++){
+			for(int k=0;k<cantPuntos;k++){
+				cerr << indy[i][j][k] << " ";
+			}
+			cerr << endl;
+		}
+	}
 //Fin de lectura de la instacia
 ///////////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -191,6 +209,9 @@ int main(int argc, char **argv){
 
    status = CPXsetintparam (env, CPX_PARAM_MIPSEARCH, CPX_MIPSEARCH_TRADITIONAL);
    if ( status )  goto TERMINATE;
+   
+   status = CPXsetintparam (env, CPX_PARAM_THREADS, 1);
+   if(status) goto TERMINATE;
 
    /* Let MIP callbacks work on the original model */
 
@@ -235,36 +256,17 @@ int main(int argc, char **argv){
 	CPXchgobjsen(env, lp, CPX_MIN);
 	
 	//Se define la funcion objetivo, los bounds y los nombres de columnas
-	//TODO debuggear
 	for(int i=0;i<cantPuntos;i++){
 		for(int j=0;j<cantPuntos;j++){
 			obj[indx[i][j]] = alfa*dist[i][j];
 			lb[indx[i][j]] = 0.0;
 			ub[indx[i][j]] = 1.0;
-			//~ string nom = "x";
-			//~ nom.push_back(i+'0');
-			//~ nom.push_back(j+'0');
-			//~ char nom[3];
-			//~ nom[0]='x';
-			//~ nom[1]=i+'0';
-			//~ nom[2]=j+'0';
-			//~ cerr << i << " " << j << endl;
-			//~ cerr << indx[i][j] << endl;
-			//~ colname[0] = nom.c_str();
-			//~ cerr << colname[0] << endl;
-			//~ cerr << "bla" << endl;
-			//~ strcpy(colname[indx[i][j]],nom.c_str());
 			coltype[indx[i][j]]='B';
 			for(int k=0;k<cantPuntos;k++){
 				obj[indy[i][j][k]] = beta*ang[i][j][k];
 				lb[indy[i][j][k]] = 0.0;
 				ub[indy[i][j][k]] = 1.0;
 				char nom2[4];
-				//~ nom[0]='y';
-				//~ nom[1]=i+'0';
-				//~ nom[2]=j+'0';
-				//~ nom[3]=k+'0';
-				//~ strcpy(colname[indy[i][j][k]], nom2);
 				coltype[indy[i][j][k]]='B';
 			}
 		}
@@ -313,7 +315,7 @@ int main(int argc, char **argv){
 		for(int j=0;j<cantPuntos;j++){
 			if(i==j)continue;
 			for(int k=0;k<cantPuntos;k++){
-				//~ if(k==i||k==j)continue;
+				//~ ////~ if(k==i||k==j)continue;
 				if(k==j)continue;
 				int nozero = 3;
 				rmatbeg[0]=0;
@@ -326,7 +328,7 @@ int main(int argc, char **argv){
 				rmatind[2]=indy[i][j][k];
 				rmatval[2]=-1.0;
 				//~ cerr << "Indice de la variable de angulo: " << rmatval[2] << endl;
-				status = CPXaddrows(env, lp, 0, NUMROWS, 3, rhs, sense, rmatbeg, rmatind, rmatval, NULL, NULL);
+				status = CPXaddrows(env, lp, 0, NUMROWS, nozero, rhs, sense, rmatbeg, rmatind, rmatval, NULL, NULL);
 				if(status)goto ENDFILL;
 			}
 		}
@@ -344,12 +346,20 @@ ENDFILL:
 	
 	//Aca quiero setear para hacer callbacks
 	
-	status = CPXsetusercutcallbackfunc(env, mycutcallback, NULL);
+	//~ status = CPXsetusercutcallbackfunc(env, mycutcallback, NULL);
+	//~ status = CPXsetusercutcallbackfunc(env, NULL, NULL);
+	//~ status = CPXsetcutcallbackfunc(env, mycutcallback, NULL);
 	if(status){
 		cerr << "pincho callback" << endl;
 		goto TERMINATE;
 	}  
 	
+	
+	status = CPXwriteprob (env, lp, "mipex1.lp", NULL);
+   if ( status ) {
+      fprintf (stderr, "Failed to write LP to disk.\n");
+      goto TERMINATE;
+   }
 	
 	
 	status = CPXmipopt(env,lp);
@@ -415,12 +425,8 @@ ENDFILL:
 
    /* Finally, write a copy of the problem to a file. */
 
-   //~ status = CPXwriteprob (env, lp, "mipex1.lp", NULL);
-   //~ if ( status ) {
-      //~ fprintf (stderr, "Failed to write LP to disk.\n");
-      //~ goto TERMINATE;
-   //~ }
-	
+   
+	//~ 
 	
 	
 	
