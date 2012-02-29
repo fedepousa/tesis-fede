@@ -150,14 +150,14 @@ int main(int argc, char **argv){
 		//~ cerr << endl;
 	//~ }
 	
-	for(int i=0;i<cantPuntos;i++){
-		for(int j=0;j<cantPuntos;j++){
-			for(int k=0;k<cantPuntos;k++){
-				cerr << indy[i][j][k] << " ";
-			}
-			cerr << endl;
-		}
-	}
+	//~ for(int i=0;i<cantPuntos;i++){
+		//~ for(int j=0;j<cantPuntos;j++){
+			//~ for(int k=0;k<cantPuntos;k++){
+				//~ cerr << indy[i][j][k] << " ";
+			//~ }
+			//~ cerr << endl;
+		//~ }
+	//~ }
 //Fin de lectura de la instacia
 ///////////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -346,7 +346,7 @@ ENDFILL:
 	
 	//Aca quiero setear para hacer callbacks
 	
-	//~ status = CPXsetusercutcallbackfunc(env, mycutcallback, NULL);
+	status = CPXsetusercutcallbackfunc(env, mycutcallback, NULL);
 	//~ status = CPXsetusercutcallbackfunc(env, NULL, NULL);
 	//~ status = CPXsetcutcallbackfunc(env, mycutcallback, NULL);
 	if(status){
@@ -493,7 +493,7 @@ mycutcallback (CPXCENVptr env,
 {
    cout << "Aca estoy haciendo callbacks!" << endl;
    *useraction_p = CPX_CALLBACK_DEFAULT;
-   
+   return 0;
 } /* END mycutcallback */
 
 
