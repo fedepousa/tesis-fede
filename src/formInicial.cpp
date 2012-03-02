@@ -17,9 +17,6 @@
 Federico Javier Pousa
 
 
-
-
-//~ static int CPXPUBLIC mycutcallback(CPXCENVptr env,void *cbdata,int wherefrom,void *cbhandle,int *useraction_p);
 static int CPXPUBLIC mycutcallback(CPXCENVptr env,void *cbdata,int wherefrom,void *cbhandle,int *useraction_p);
 
 static void free_and_null (char** ptr);
@@ -79,7 +76,7 @@ int main(int argc, char **argv){
 	fscanf(fin, "%d", &cantPuntos);
 	//~ Muestra la cantidad de puntos
 	//~ cerr << cantPuntos << endl;
-	#define MAXPUNTOS 10
+	#define MAXPUNTOS 100
 	Punto puntos[MAXPUNTOS];
 	for(int i=0;i<cantPuntos;i++){
 		fscanf(fin, "%lf %lf", &puntos[i].x, &puntos[i].y);
@@ -143,6 +140,8 @@ int main(int argc, char **argv){
 	
 	
 	
+////////////////////////////////////////////////////////////////////////////////////////////////
+//Para mostrar como quedan las matrices de indices
 	//~ for(int i=0;i<cantPuntos;i++){
 		//~ for(int j=0;j<cantPuntos;j++){
 			//~ cerr << indx[i][j] << " ";
@@ -266,7 +265,6 @@ int main(int argc, char **argv){
 				obj[indy[i][j][k]] = beta*ang[i][j][k];
 				lb[indy[i][j][k]] = 0.0;
 				ub[indy[i][j][k]] = 1.0;
-				char nom2[4];
 				coltype[indy[i][j][k]]='B';
 			}
 		}
@@ -346,7 +344,9 @@ ENDFILL:
 	
 	//Aca quiero setear para hacer callbacks
 	
+	//cut callback con mi funcion
 	status = CPXsetusercutcallbackfunc(env, mycutcallback, NULL);
+	//cut cullback sin ninguna funcion
 	//~ status = CPXsetusercutcallbackfunc(env, NULL, NULL);
 	//~ status = CPXsetcutcallbackfunc(env, mycutcallback, NULL);
 	if(status){
@@ -355,11 +355,7 @@ ENDFILL:
 	}  
 	
 	
-	status = CPXwriteprob (env, lp, "mipex1.lp", NULL);
-   if ( status ) {
-      fprintf (stderr, "Failed to write LP to disk.\n");
-      goto TERMINATE;
-   }
+	
 	
 	
 	status = CPXmipopt(env,lp);
@@ -423,10 +419,15 @@ ENDFILL:
 		cout << revind[j] << endl;
 	}
 
-   /* Finally, write a copy of the problem to a file. */
+   /* Ahora escribo el problema a un archivo */
 
    
 	//~ 
+	status = CPXwriteprob (env, lp, "mipex1.lp", NULL);
+	if ( status ) {
+		fprintf (stderr, "Failed to write LP to disk.\n");
+		goto TERMINATE;
+	}
 	
 	
 	
@@ -492,7 +493,7 @@ mycutcallback (CPXCENVptr env,
                int        *useraction_p)
 {
    cout << "Aca estoy haciendo callbacks!" << endl;
-   *useraction_p = CPX_CALLBACK_DEFAULT;
+   //~ *useraction_p = CPX_CALLBACK_DEFAULT;
    return 0;
 } /* END mycutcallback */
 
