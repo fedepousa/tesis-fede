@@ -8,6 +8,7 @@
 #include <cmath>
 #include <sstream>
 #include <string>
+#include <fstream>
 #define PI 3.14159265358979323846
 
 
@@ -42,6 +43,11 @@ double prod(Punto &p1, Punto &p2){
 	return p1.x*p2.x+p1.y*p2.y;
 }
 
+
+#define MAXPUNTOS 60
+Punto puntos[MAXPUNTOS];
+int cantPuntos;
+
 int main(int argc, char **argv){
 
 	//~ alfa es el peso correspondiente a tsp, beta a angtsp
@@ -59,7 +65,6 @@ int main(int argc, char **argv){
 	CPXLPptr lp = NULL;
 	int i, j;
 	int cur_numrows, cur_numcols;
-	int cantPuntos;
 	
 	
 	//~ if(argc != 2){
@@ -71,8 +76,6 @@ int main(int argc, char **argv){
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 //Lectura de la instancia
-	#define MAXPUNTOS 60
-	Punto puntos[MAXPUNTOS];
 	FILE *fin;
 	// Para levantar mi entrada sin formato tsplib
 	fin = fopen("entrada", "r");
@@ -500,9 +503,59 @@ mycutcallback (CPXCENVptr env,
 } /* END mycutcallback */
 
 
-
-void readTSPLIB(){
-	return;
+///////////////////////////////////////
+int readTSPLIB(char * archivo){
+	ifstream fin(archivo);
+	string act;
+	size_t p=string::npos;
+	
+	while(p==string::npos && !fin.eof()){
+		getline(fin,act);
+		p = act.find("DIMENSION");       
+    }
+    
+    if(p==string::npos){
+		cerr << "No hay dimension..." << endl;
+		fin.close();
+		return 1;
+	}
+	//TODO mirar la cuenta que sigue
+    cantPuntos = atoi(act.substr(p+11).c_str());
+    //Arranco de nuevo para los nodos
+	fin.seekg(0,ios::beg);
+	p=string::npos;
+	while(p==string::npos && !fin.eof()){
+		getline(fin,act);
+		p = act.find("TWOD_COORDS");
+		if(p==string::npos){
+			p = act.find("EUC_2D");
+		}   
+	}
+    if(p==string::npos){
+		cerr << "No estan las coordenadas de los nodos, no sirve para mi problema" << endl;
+		fin.close();
+		return 2;
+	}
+	
+	//Arranco de nuevo para las coordenadas
+	fin.seekg(0,ios::beg);
+	p=string::npos;
+	while(p==string::npos && !fin.eof()){
+		getline(fin,act);
+		p = act.find("NODE_COORD_SECTION");
+	}
+	if(p==string::npos){
+		cerr << "Y los nodos?!?" << endl;
+		fin.close();
+		return 3;
+	}
+	int bla;
+	for(int i=0;i<cantPuntos;i++){
+		fin >> bla >> puntos[i].x >> puntos[i].y;
+	}
+	fin.close();
+	return 0;
 }
+///////////////////////////////////////
 
 

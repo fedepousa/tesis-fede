@@ -5,6 +5,8 @@
 #include "lib/TDTSPInstance.h"
 
 
+#define cube vector<vector<vector <double>>>
+
 TDTSPInstance::TDTSPInstance(char* source)
 :_source(source)
 { 
@@ -27,14 +29,14 @@ TDTSPInstance::TDTSPInstance(char* source)
               getline(_source,aux);
               p = aux.find("DIMENSION");       
            }
-           if(p==string::npos) cout << "Algo funcion� mal...";
+           if(p==string::npos) cout << "Algo funciono mal...";
            _n = atoi(aux.substr(p+11).c_str());
            p=string::npos;
            while(p==string::npos && !_source.eof()){
               getline(_source,aux);
               p = aux.find("EDGE_WEIGHT_TYPE");       
            }
-           if(p==string::npos) cout << "Algo funcion� mal...";
+           if(p==string::npos) cout << "Algo funciono mal...";
            if(aux.find("EUC_2D")!=string::npos){
               p=string::npos;
               while(p==string::npos && !_source.eof()){
