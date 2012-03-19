@@ -71,30 +71,22 @@ int main(int argc, char **argv){
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 //Lectura de la instancia
-	#define MAXPUNTOS 100
+	#define MAXPUNTOS 60
 	Punto puntos[MAXPUNTOS];
 	FILE *fin;
 	// Para levantar mi entrada sin formato tsplib
-	//~ fin = fopen("entrada", "r");
-	//~ fscanf(fin, "%d", &cantPuntos);
+	fin = fopen("entrada", "r");
+	fscanf(fin, "%d", &cantPuntos);
 	//~ Muestra la cantidad de puntos
-	//~ cerr << cantPuntos << endl;
-	//~ for(int i=0;i<cantPuntos;i++){
-		//~ fscanf(fin, "%lf %lf", &puntos[i].x, &puntos[i].y);
-	//~ }
+	cerr << cantPuntos << endl;
+	for(int i=0;i<cantPuntos;i++){
+		fscanf(fin, "%lf %lf", &puntos[i].x, &puntos[i].y);
+	}
 	//~ Muestra los puntos levantados
-	//~ for(int i=0;i<cantPuntos;i++){
-		//~ cerr << i << " " << puntos[i].x << " " << puntos[i].y << endl;
-	//~ }
+	for(int i=0;i<cantPuntos;i++){
+		cerr << i << " " << puntos[i].x << " " << puntos[i].y << endl;
+	}
 	
-	
-	// Para levantar tsplib
-	fin = fopen("att48.tsp", "r");
-	char tag[40];
-	char nombre[100];
-	char comment[1000];
-	fscanf(fin, "%s : %s", tag, nombre);
-	fscanf(fin, "%s : %s", tag, comment);
 	
 	int indice = 0;
 	//Este array seria para saber de que variable estoy hablando
@@ -506,5 +498,11 @@ mycutcallback (CPXCENVptr env,
    //~ *useraction_p = CPX_CALLBACK_DEFAULT;
    return 0;
 } /* END mycutcallback */
+
+
+
+void readTSPLIB(){
+	return;
+}
 
 
