@@ -12,6 +12,8 @@ using namespace std;
 
 #include "defs.h"
 
+#define cube vector<vector<vector <double>>>
+
 class TDTSPInstance {
 
   public:
