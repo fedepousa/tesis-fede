@@ -19,6 +19,7 @@ Federico Javier Pousa
 
 
 static int CPXPUBLIC mycutcallback(CPXCENVptr env,void *cbdata,int wherefrom,void *cbhandle,int *useraction_p);
+int readTSPLIB(char * archivo);
 
 static void free_and_null (char** ptr);
 
@@ -47,12 +48,19 @@ double prod(Punto &p1, Punto &p2){
 #define MAXPUNTOS 60
 Punto puntos[MAXPUNTOS];
 int cantPuntos;
+double obj[MAXPUNTOS*MAXPUNTOS*MAXPUNTOS+MAXPUNTOS*MAXPUNTOS];
+double lb[MAXPUNTOS*MAXPUNTOS*MAXPUNTOS+MAXPUNTOS*MAXPUNTOS];
+double ub[MAXPUNTOS*MAXPUNTOS*MAXPUNTOS+MAXPUNTOS*MAXPUNTOS];
+char *colname[MAXPUNTOS*MAXPUNTOS*MAXPUNTOS+MAXPUNTOS*MAXPUNTOS];
+char coltype[MAXPUNTOS*MAXPUNTOS*MAXPUNTOS+MAXPUNTOS*MAXPUNTOS];
+int rmatind[MAXPUNTOS*MAXPUNTOS*MAXPUNTOS+MAXPUNTOS*MAXPUNTOS];
+double rmatval[MAXPUNTOS*MAXPUNTOS*MAXPUNTOS+MAXPUNTOS*MAXPUNTOS];
 
 int main(int argc, char **argv){
 
 	//~ alfa es el peso correspondiente a tsp, beta a angtsp
-	double alfa = 0.5;
-	double beta = 0.5;
+	double alfa = 1.0;
+	double beta = 0.0;
 	int solstat;
 	int status;
 	double objval;
@@ -75,20 +83,43 @@ int main(int argc, char **argv){
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
-//Lectura de la instancia
-	FILE *fin;
-	// Para levantar mi entrada sin formato tsplib
-	fin = fopen("entrada", "r");
-	fscanf(fin, "%d", &cantPuntos);
-	//~ Muestra la cantidad de puntos
-	cerr << cantPuntos << endl;
-	for(int i=0;i<cantPuntos;i++){
-		fscanf(fin, "%lf %lf", &puntos[i].x, &puntos[i].y);
-	}
-	//~ Muestra los puntos levantados
-	for(int i=0;i<cantPuntos;i++){
-		cerr << i << " " << puntos[i].x << " " << puntos[i].y << endl;
-	}
+//Lectura de la instancia y armado de las distancias y angulos
+
+	/////////////////////////////////////////////////////////////////////////////////////
+	//Lectura de archivo con formato propio
+	//~ FILE *fin;
+	//~ // Para levantar mi entrada sin formato tsplib
+	//~ fin = fopen("entrada", "r");
+	//~ fscanf(fin, "%d", &cantPuntos);
+	//~ //Muestra la cantidad de puntos
+	//~ cerr << cantPuntos << endl;
+	//~ for(int i=0;i<cantPuntos;i++){
+		//~ fscanf(fin, "%lf %lf", &puntos[i].x, &puntos[i].y);
+	//~ }
+	//~ //Muestra los puntos levantados
+	//~ for(int i=0;i<cantPuntos;i++){
+		//~ cerr << i << " " << puntos[i].x << " " << puntos[i].y << endl;
+	//~ }
+	//~ fclose(fin);
+	//Fin de lectura de archivo
+	/////////////////////////////////////////////////////////////////////////////////////
+	
+	/////////////////////////////////////////////////////////////////////////////////////
+	// Lectura de archivo TSPLIB
+	
+	readTSPLIB("berlin52.tsp");
+	//~ if(status){
+		
+	//~ }
+	//~ //Muestra la cantidad de puntos
+	//~ cerr << cantPuntos << endl;
+	//~ //Muestra los puntos levantados
+	//~ for(int i=0;i<cantPuntos;i++){
+		//~ cerr << i << " " << puntos[i].x << " " << puntos[i].y << endl;
+	//~ }
+	// Fin de lectura de archivo
+	/////////////////////////////////////////////////////////////////////////////////////
+	
 	
 	
 	int indice = 0;
@@ -141,7 +172,6 @@ int main(int argc, char **argv){
 			}
 		}
 	}
-	fclose(fin);
 	
 	
 	
@@ -182,6 +212,7 @@ int main(int argc, char **argv){
 		goto TERMINATE;
 	}
 	
+	
 	//Para habilitar el indicador por pantalla
 	status = CPXsetintparam(env, CPX_PARAM_SCRIND, CPX_ON);
 	if(status){
@@ -196,7 +227,6 @@ int main(int argc, char **argv){
 	}
 
 	
-	
 	//Ahora se crea el problema
 	
 	lp = CPXcreateprob(env, &status, "formInicial");
@@ -204,7 +234,6 @@ int main(int argc, char **argv){
 		fprintf(stderr, "No se pudo crear el problema, error %d\n", status);
 		goto TERMINATE;
 	}
-	
 	
 	
 	
@@ -236,26 +265,27 @@ int main(int argc, char **argv){
 	
 	
 	
-	
 /////////////////////////////////////////////////////////////////////////
 //Aca se llena el problema
 	#define NUMCOLS cantPuntos*cantPuntos+cantPuntos*cantPuntos*cantPuntos
 	#define NUMROWS 1
 	#define NUMNZ cantPuntos*cantPuntos+cantPuntos*cantPuntos*cantPuntos
-	status=0;
 	
-	double obj[NUMCOLS];
-	double lb[NUMCOLS];
-	double ub[NUMCOLS];
-	char *colname[NUMCOLS];
-	char coltype[NUMCOLS];
+	
+	//~ double obj[NUMCOLS];
+	//~ double lb[NUMCOLS];
+	//~ double ub[NUMCOLS];
+	//~ char *colname[NUMCOLS];
+	//~ char coltype[NUMCOLS];
 	int rmatbeg[NUMROWS];
-	int rmatind[NUMNZ];
-	double rmatval[NUMNZ];
+	//~ int rmatind[NUMNZ];
+	//~ double rmatval[NUMNZ];
 	double rhs[NUMROWS];
 	char sense[NUMROWS];
 	char *rowname[NUMROWS];
 	
+	//~ cerr << "llegue2" << endl;
+	status=0;
 	//Se setea el sentido de la funcion objetivo
 	CPXchgobjsen(env, lp, CPX_MIN);
 	
@@ -419,7 +449,8 @@ ENDFILL:
 		//~ printf("Row %d:  Slack = %10f\n",i,slack[i]);
 	//~ }
 
-	for(j=0;j<cur_numcols;j++) {
+	//~ for(j=0;j<cur_numcols;j++) {
+	for(j=0;j<52*52;j++) {
 		printf("Column %d:  Value = %10f ",j,x[j]);
 		cout << revind[j] << endl;
 	}
