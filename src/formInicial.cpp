@@ -12,9 +12,6 @@
 #define PI 3.14159265358979323846
 
 
-
-
-
 Federico Javier Pousa
 
 
@@ -450,10 +447,10 @@ ENDFILL:
 	//~ }
 
 	//~ for(j=0;j<cur_numcols;j++) {
-	for(j=0;j<52*52;j++) {
-		printf("Column %d:  Value = %10f ",j,x[j]);
-		cout << revind[j] << endl;
-	}
+	//~ for(j=0;j<52*52;j++) {
+		//~ printf("Column %d:  Value = %10f ",j,x[j]);
+		//~ cout << revind[j] << endl;
+	//~ }
 
    /* Ahora escribo el problema a un archivo */
 
