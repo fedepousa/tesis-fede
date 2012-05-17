@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2012.2.16)  16 MAY 2012 11:49
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2012.2.16)  16 MAY 2012 12:23
 entering extended mode
  %&-line parsing enabled.
 **tesis.tex
@@ -209,10 +209,10 @@ LaTeX Info: Redefining \pageref on input line 5.
 (./Resultados.tex) [8] (./Analisis.tex) [9] (./Conclusiones.tex) [10]
 (./TrabajoFuturo.tex) [11] (./tesis.aux) ) 
 Here is how much of TeX's memory you used:
- 4097 strings out of 495061
- 59165 string characters out of 1182621
- 121909 words of memory out of 3000000
- 7211 multiletter control sequences out of 15000+50000
+ 4098 strings out of 495061
+ 59170 string characters out of 1182621
+ 122909 words of memory out of 3000000
+ 7212 multiletter control sequences out of 15000+50000
  4553 words of font info for 17 fonts, out of 3000000 for 9000
  28 hyphenation exceptions out of 8191
  38i,4n,36p,250b,319s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -220,7 +220,7 @@ Here is how much of TeX's memory you used:
 /public/amsfonts/cm/cmbx10.pfb></usr/share/texmf-texlive/fonts/type1/public/ams
 fonts/cm/cmbx12.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cm
 r10.pfb>
-Output written on tesis.pdf (11 pages, 51373 bytes).
+Output written on tesis.pdf (11 pages, 52393 bytes).
 PDF statistics:
  84 PDF objects out of 1000 (max. 8388607)
  22 named destinations out of 1000 (max. 500000)
